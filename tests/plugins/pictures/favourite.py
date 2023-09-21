@@ -73,6 +73,6 @@ def assert_picture_is_users_favourite() -> FavouritePictureAssertion:
 
     def factory(user: User, picture: PictureData) -> None:
         rv = user.pictures.filter(foreign_id=picture['foreign_id'])
-        assert rv.exists()
+        assert rv.count() == 1
 
     return factory
