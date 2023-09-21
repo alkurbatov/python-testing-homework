@@ -244,3 +244,9 @@ artifacts/
 
 # ipython:
 .ipython/
+
+# Pyright settings
+pyrightconfig.json
+
+# Emacs things
+.dir-locals.el
