@@ -94,3 +94,7 @@ format_attribute_template_tags = true
 
 [tool.nitpick]
 style = "https://raw.githubusercontent.com/wemake-services/wemake-python-styleguide/0.18.0/styles/nitpick-style-wemake.toml"
+
+
+[tool.poetry.plugins."pytest_randomly.random_seeder"]
+mimesis = "mimesis.entrypoints:pytest_randomly_reseed"
