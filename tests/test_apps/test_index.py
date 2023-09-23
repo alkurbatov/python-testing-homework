@@ -1,4 +1,7 @@
+from typing import cast
+
 import pytest
+from django.http import HttpResponse
 from django.test import Client
 from pytest_django.asserts import assertTemplateUsed
 
@@ -7,9 +10,9 @@ from pytest_django.asserts import assertTemplateUsed
 @pytest.mark.usefixtures('logged_in_user')
 def test_render_index_view(client: Client) -> None:
     """Test that correct template used to render / page."""
-    response = client.get('/')
+    response = cast(HttpResponse, client.get('/'))
 
     assertTemplateUsed(
-        response,  # type: ignore[arg-type]
+        response,
         'pictures/pages/index.html',
     )

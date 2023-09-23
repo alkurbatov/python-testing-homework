@@ -1,7 +1,6 @@
 from typing import Callable, Protocol, TypeAlias, TypedDict, final
 
 import pytest
-from mimesis.random import Random
 from mimesis.schema import Field, Schema
 from typing_extensions import Unpack
 
@@ -32,7 +31,7 @@ def picture_data_factory(mf: Field) -> PictureDataFactory:
     def factory(**fields: Unpack[PictureData]) -> PictureData:
         schema = Schema(
             schema=lambda: {
-                'foreign_id': Random().randints(amount=1)[0],
+                'foreign_id': mf('numeric.increment'),
                 'url': mf('url'),
             },
             iterations=1,
