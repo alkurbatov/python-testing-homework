@@ -1,7 +1,6 @@
 from typing import Callable, Protocol, TypeAlias, TypedDict, final
 
 import pytest
-from mimesis.random import Random
 from mimesis.schema import Field, Schema
 from typing_extensions import Unpack
 
@@ -32,7 +31,7 @@ def picture_data_factory(mf: Field) -> PictureDataFactory:
     def factory(**fields: Unpack[PictureData]) -> PictureData:
         schema = Schema(
             schema=lambda: {
-                'foreign_id': Random().randints(amount=1)[0],
+                'foreign_id': mf('numeric.increment'),
                 'url': mf('url'),
             },
             iterations=1,
@@ -73,6 +72,6 @@ def assert_picture_is_users_favourite() -> FavouritePictureAssertion:
 
     def factory(user: User, picture: PictureData) -> None:
         rv = user.pictures.filter(foreign_id=picture['foreign_id'])
-        assert rv.exists()
+        assert rv.count() == 1
 
     return factory

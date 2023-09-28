@@ -1,6 +1,8 @@
 from http import HTTPStatus
+from typing import cast
 
 import pytest
+from django.http import HttpResponse
 from django.test import Client
 from django.urls import reverse
 from plugins.identity.user import UserAssertion, UserData, UserDataFactory
@@ -42,9 +44,9 @@ def test_valid_update(
 @pytest.mark.usefixtures('logged_in_user')
 def test_render_update_view(client: Client) -> None:
     """Test that correct template used to render update user page."""
-    response = client.get(reverse('identity:user_update'))
+    response = cast(HttpResponse, client.get(reverse('identity:user_update')))
 
     assertTemplateUsed(
-        response,  # type: ignore[arg-type]
+        response,
         'identity/pages/user_update.html',
     )
