@@ -1,6 +1,7 @@
 from typing import Callable, Protocol, TypeAlias, TypedDict, final
 
 import pytest
+from django_fakery import factory as fakery
 from mimesis.schema import Field, Schema
 from typing_extensions import Unpack
 
@@ -49,16 +50,12 @@ FavouritePictureFactory: TypeAlias = Callable[[User], FavouritePicture]
 
 
 @pytest.fixture(scope='session')
-def favourite_picture_factory(
-    picture_data_factory: PictureDataFactory,
-) -> FavouritePictureFactory:
-    """Create a ``FavouritePicture`` directly in database."""
+def favourite_picture_factory() -> FavouritePictureFactory:
+    """Create instance of ``FavouritePicture``."""
 
     def factory(user: User) -> FavouritePicture:
-        return FavouritePicture.objects.create(
-            **picture_data_factory(),
-            user=user,
-        )
+        rv = fakery.m(FavouritePicture)  # type: ignore[attr-defined]
+        return rv(user=user)
 
     return factory
 

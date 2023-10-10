@@ -3,6 +3,7 @@ from typing import Callable, Protocol, TypeAlias, TypedDict, final
 
 import pytest
 from django.test import Client
+from django_fakery import factory as fakery
 from mimesis.schema import Field, Schema
 from typing_extensions import Unpack
 
@@ -103,34 +104,21 @@ class LoginData(TypedDict, total=False):
     password: str
 
 
-UserFactory: TypeAlias = Callable[[str], User]
-
-
 @pytest.fixture()
-def user_factory(
-    user_data_factory: UserDataFactory,
-) -> UserFactory:
-    """Create a user directly in database."""
-    def factory(password: str) -> User:
-        return User.objects.create_user(
-            **user_data_factory(),
-            password=password,
-        )
-
-    return factory
+def unauthenticated_user() -> User:
+    """Create a user without authentication."""
+    return fakery.m(User)()  # type: ignore[attr-defined]
 
 
 @pytest.fixture()
 def logged_in_user(
-    mf: Field,
     client: Client,
-    user_factory: UserFactory,
+    unauthenticated_user: User,
 ) -> User:
     """Provide authenticated user to be used in tests."""
-    user = user_factory(mf('password'))
-    client.force_login(user)
+    client.force_login(unauthenticated_user)
 
-    return user
+    return unauthenticated_user
 
 
 UserAssertion: TypeAlias = Callable[[str, UserData], None]
